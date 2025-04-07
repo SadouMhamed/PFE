@@ -1,55 +1,62 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Créer une Demande</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<div class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="p-6 w-full max-w-2xl bg-white rounded-lg shadow-md">
+        <h2 class="mb-4 text-xl font-semibold text-center text-gray-700">Créer une Demande</h2>
 
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .error { color: red; }
-        .success { color: green; }
-    </style>
-</head>
-<body>
+        @if(session('success'))
+            <p class="text-center text-green-600">{{ session('success') }}</p>
+        @endif
 
-    @if(session('success'))
-        <p class="success">{{ session('success') }}</p>
-    @endif
+        <form action="{{ route('demande.submit') }}" method="POST" class="space-y-4">
+            @csrf
 
-    <form action="{{ route('demande.submit') }}" method="POST">
-        @csrf
-    <div class="mb-3">
-        <label for="typeProbleme" class="form-label">Type de problème:</label>
-        <input type="text" class="form-control @error('typeProbleme') is-invalid @enderror" id="typeProbleme" name="typeProbleme" value="{{ old('typeProbleme') }}">
-        @error('typeProbleme') <p class="error">{{ $message }}</p> 
-        <div class="invalid-feedback">{{ $message }}</div>@enderror
-        </div>
+           
 
-        <br>
-    <div class="mb-3"> <label for="description" class="form-label">Description:</label>
-        <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description">{{ old('description') }}</textarea>
-        @error('description') <p class="error">{{ $message }}</p> 
-         <div class="invalid-feedback">{{ $message }}</div>@enderror
+            <!-- Description -->
+            <div>
+                <label for="description" class="block text-gray-700">Description:</label>
+                <textarea id="description" name="description"
+                          class="w-full p-2 border rounded-lg @error('description') border-red-500 @enderror">{{ old('description') }}</textarea>
+                @error('description')
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+            <!-- Type de problème -->
+            <div>
+                <label for="typeProbleme" class="block text-gray-700">Type de problème:</label>
+                <select id="typeProbleme" name="typeProbleme"
+                        class="w-full p-2 border rounded-lg @error('typeProbleme') border-red-500 @enderror">
+                    <option value="">Sélectionnez un type</option>
+                    <option value="hardware" {{ old('typeProbleme') == 'hardware' ? 'selected' : '' }}>Hardware</option>
+                    <option value="software" {{ old('typeProbleme') == 'software' ? 'selected' : '' }}>Software</option>
+                    <option value="réseau" {{ old('typeProbleme') == 'réseau' ? 'selected' : '' }}>Réseau</option>
+                </select>
+                @error('typeProbleme')
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+            <!-- Statut -->
+           
+            <div>
+                <label for="bureau_de_poste_id" class="block text-gray-700">Bureau de Poste:</label>
+                <select id="bureau_de_poste_id" name="bureau_de_poste_id" class="w-full p-2 border rounded-lg">
+                    <option value="">Sélectionnez un bureau de poste</option>
+                    @foreach($bureauDePostes as $bureau)
+                        <option value="{{ $bureau->id }}">{{ $bureau->intitule_fr }}</option>
+                    @endforeach
+                </select>
+                @error('bureau_de_poste_id')
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+            <div>
+                <input type="hidden" name="statut" value="non affecté">
+            </div>
 
-        <br>
-    <div class="mb-3"><label for="statut" class="form-label">Statut:</label>
-        <select id="statut" name="statut" class="form-select @error('statut') is-invalid @enderror">
-            <option value="non affecté">Non Affecté</option>
-            <option value="affecté en cours">Affecté en Cours</option>
-            <option value="affecté en attente">Affecté en Attente</option>
-            <option value="traité">Traité</option>
-            <option value="clôturé">Clôturé</option>
-        </select>
-        @error('statut') <p class="error">{{ $message }}</p> 
-        <div class="invalid-feedback">{{ $message }}</div>@enderror</div>
-        
-
-        <br>
-
-        <button type="submit" class="btn btn-primary w-100">Soumettre</button>
-    </form>
-
-</body>
-</html>
+            <!-- Bouton de soumission -->
+            <button type="submit"
+                    class="p-3 w-full text-white bg-blue-600 rounded-lg transition hover:bg-blue-700">
+                Soumettre
+            </button>
+        </form>
+    </div>
+</div>

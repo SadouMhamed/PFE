@@ -7,8 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Demande extends Model
 {
-    //
     use HasFactory;
 
-    protected $fillable = ['typeProbleme', 'description',  'statut' , 'user_id'];
+    protected $fillable = [
+        'typeProbleme',
+        'description',
+        'statut',
+        'user_id',
+        'bureau_de_poste_id'
+    ];
+
+    public function bureauDePoste()
+    {
+        return $this->belongsTo(BureauDePoste::class, 'bureau_de_poste_id', 'id');
+    }
 }

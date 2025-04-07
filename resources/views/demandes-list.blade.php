@@ -1,51 +1,46 @@
-@extends('layouts.app')
+<x-app-layout>
+    <div class="py-10 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <h2 class="mb-4 text-2xl font-bold text-gray-800">📋 Liste des Demandes</h2>
 
-@section('content')
-<div class="container mt-5">
-    <div class="p-4 shadow-lg card">
-        <h2 class="mb-4 text-center">Liste des Demandes</h2>
-
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
-        @if($demandes->isEmpty())
-            <p class="text-center">Aucune demande enregistrée.</p>
-        @else
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
+        <div class="overflow-hidden bg-white rounded-lg shadow-md">
+            <table class="min-w-full border border-gray-300 border-collapse">
+                <thead class="text-white bg-gray-800">
                     <tr>
-                        <th>Type de problème</th>
-                        <th>Description</th>
-                        
-                        <th>Statut</th>
+                        <th class="px-4 py-2 border border-gray-300">ID</th>
+                        <th class="px-4 py-2 border border-gray-300">Type de Problème</th>
+                        <th class="px-4 py-2 border border-gray-300">Description</th>
+                        <th class="px-4 py-2 border border-gray-300">Bureau de Poste</th>
+                        <th class="px-4 py-2 border border-gray-300">Statut</th>
+                        <th class="px-4 py-2 border border-gray-300">Date de création</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach ($demandes as $demande)
-                        <tr>
-                            <td>{{ $demande->typeProbleme }}</td>
-                            <td>{{ $demande->description }}</td>
-                            <td>{{ $demande->date_de_demande }}</td>
-                            <td>
-                                @php
-                                    $statusColors = [
-                                        'non affecté' => 'bg-secondary',
-                                        'affecté en cours' => 'bg-warning',
-                                        'affecté en attente' => 'bg-info',
-                                        'traité' => 'bg-success',
-                                        'clôturé' => 'bg-danger'
-                                    ];
-                                @endphp
-                                <span class="badge {{ $statusColors[$demande->statut] ?? 'bg-primary' }}">
-                                   {{ $demande->statut ?? 'Inconnu' }}
-                                </span>
-                            </td>
-                        </tr>
+                <tbody class="bg-white">
+                    @foreach($demandes as $demande)
+                    <tr class="hover:bg-gray-100">
+                        <td class="px-4 py-2 text-center border border-gray-300">{{ $demande->id }}</td>
+                        <td class="px-4 py-2 border border-gray-300">{{ $demande->typeProbleme }}</td>
+                        <td class="px-4 py-2 border border-gray-300">{{ $demande->description }}</td>
+                        <td class="px-4 py-2 border border-gray-300">
+                            {{ $demande->bureauDePoste->intitule_fr ?? 'Non assigné' }}
+                        </td>
+                        <td class="px-4 py-2 text-center border border-gray-300">
+                            @if($demande->statut === 'non affecté')
+                                <span class="px-3 py-1 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded-full">🟡 Non Affecté</span>
+                            @elseif($demande->statut === 'affecté en cours')
+                                <span class="px-3 py-1 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">🔵 En Cours</span>
+                            @elseif($demande->statut === 'affecté en attente')
+                                <span class="px-3 py-1 text-xs font-semibold text-gray-800 bg-gray-200 rounded-full">⚪ En Attente</span>
+                            @elseif($demande->statut === 'traité')
+                                <span class="px-3 py-1 text-xs font-semibold text-green-800 bg-green-200 rounded-full">🟢 Traité</span>
+                            @else
+                                <span class="px-3 py-1 text-xs font-semibold text-red-800 bg-red-200 rounded-full">🔴 Clôturé</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-2 text-center border border-gray-300">{{ $demande->created_at->format('d-m-Y H:i') }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
-        @endif
+        </div>
     </div>
-</div>
-@endsection
+</x-app-layout>

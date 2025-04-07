@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Demande;
+use App\Models\BureauDePoste;
 
 class DemandeController extends Controller
 {
@@ -17,7 +18,11 @@ class DemandeController extends Controller
     //
     public function showForm()
     {
-        return view('dashboard', ['showForm' => true]);
+        $bureauDePostes = BureauDePoste::all();
+        return view('dashboard', [
+            'showForm' => true,
+            'bureauDePostes' => $bureauDePostes
+        ]);
     }
     public function handleForm(Request $request)
     {
@@ -27,9 +32,10 @@ class DemandeController extends Controller
        
         // Validate inputs
         $validatedData = $request->validate([
-            'typeProbleme' => 'required|string|max:255',
+            'typeProbleme' => 'required|string|in:hardware,software,réseau',
             'description' => 'required|min:10',
-            'statut' => 'required|in:non affecté,affecté en cours,affecté en attente,traité,clôturé',
+            'statut' => 'required|in:non affecté',
+            'bureau_de_poste_id' => 'required|exists:Bureau_de_poste,id',
         ]);
 
         // Ajouter l'ID de l'utilisateur connecté
@@ -42,7 +48,7 @@ class DemandeController extends Controller
     }
     public function listDemandes()
     {
-        $demandes = Demande::latest()->get(); // Fetch all demandes sorted by latest
+        $demandes = Demande::with('bureauDePoste')->latest()->get();
         return view('demandes-list', compact('demandes'));
     }
 
