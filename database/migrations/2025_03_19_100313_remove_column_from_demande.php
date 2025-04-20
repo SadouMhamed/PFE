@@ -6,25 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::table('demandes', function (Blueprint $table) {
-            $table->dropColumn('date_de_demande');
-            //
-        });
+        if (Schema::hasColumn('demandes', 'date_de_demande')) {
+            Schema::table('demandes', function (Blueprint $table) {
+                $table->dropColumn('date_de_demande');
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('demandes', function (Blueprint $table) {
-            $table->string('date_de_demande');
-            //
-        });
+        if (!Schema::hasColumn('demandes', 'date_de_demande')) {
+            Schema::table('demandes', function (Blueprint $table) {
+                $table->timestamp('date_de_demande')->nullable();
+            });
+        }
     }
 };

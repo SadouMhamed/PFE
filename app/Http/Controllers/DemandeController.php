@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Demande;
 use App\Models\BureauDePoste;
+use App\Models\Ticket;
+use App\Models\User;
 
 class DemandeController extends Controller
 {
@@ -19,10 +21,11 @@ class DemandeController extends Controller
     public function showForm()
     {
         $bureauDePostes = BureauDePoste::all();
-        return view('dashboard', [
-            'showForm' => true,
-            'bureauDePostes' => $bureauDePostes
-        ]);
+        $ticketsCount = Ticket::count();
+        $demandesCount = Demande::count();
+        $techniciensCount = User::where('role', 'technicien')->count();
+
+        return view('dashboard', compact('bureauDePostes', 'ticketsCount', 'demandesCount', 'techniciensCount'));
     }
     public function handleForm(Request $request)
     {
@@ -35,7 +38,7 @@ class DemandeController extends Controller
             'typeProbleme' => 'required|string|in:hardware,software,réseau',
             'description' => 'required|min:10',
             'statut' => 'required|in:non affecté',
-            'bureau_de_poste_id' => 'required|exists:Bureau_de_poste,id',
+            'bureau_de_poste_id' => 'required|exists:bureau_de_postes,id',
         ]);
 
         // Ajouter l'ID de l'utilisateur connecté

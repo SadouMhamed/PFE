@@ -9,11 +9,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('demandes', function (Blueprint $table) {
-            $table->unsignedBigInteger('bureau_de_poste_id')->nullable();
-            
-            $table->foreign('bureau_de_poste_id', 'demandes_bdp_foreign')
-                  ->references('id')
-                  ->on('Bureau_de_poste')
+            $table->foreignId('bureau_de_poste_id')
+                  ->nullable()
+                  ->constrained('bureau_de_postes')  // Changed from Bureau_de_poste to bureau_de_postes
                   ->onDelete('cascade');
         });
     }
@@ -21,7 +19,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('demandes', function (Blueprint $table) {
-            $table->dropForeign('demandes_bdp_foreign');
+            $table->dropForeign(['bureau_de_poste_id']);
             $table->dropColumn('bureau_de_poste_id');
         });
     }

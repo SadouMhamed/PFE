@@ -3,17 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class BureauDePoste extends Model
 {
-    use HasFactory;
-
-    protected $table = 'Bureau_de_poste';
-    protected $fillable = ['intitule_fr'];
+    protected $table = 'bureau_de_postes';
+    public $timestamps = true;
+    
+    protected $fillable = [
+        'code',
+        'intitule_fr',
+        'intitule_ar'
+    ];
 
     public function demandes()
     {
-        return $this->hasMany(Demande::class, 'bureau_de_poste_id', 'id');
+        return $this->hasMany(Demande::class);
     }
 }
