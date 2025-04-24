@@ -19,4 +19,9 @@ class BureauDePoste extends Model
     {
         return $this->hasMany(Demande::class);
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

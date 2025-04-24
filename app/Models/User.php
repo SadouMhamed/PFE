@@ -21,7 +21,15 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'bureau_de_poste_id'  // Add this to fillable
     ];
+    
+    // Add this relationship
+    public function bureauDePoste()
+    {
+        return $this->belongsTo(BureauDePoste::class, 'bureau_de_poste_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TechnicienController;
+use App\Http\Controllers\BureauAccountController;
+
 
 
 Route::get('/', function () {
@@ -35,9 +38,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/tickets/{ticket}/pdf', [TicketController::class, 'generatePdf'])->name('tickets.generatePdf');
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
+        Route::resource('bureau-accounts', BureauAccountController::class);
+        // Add technicien routes
         Route::resource('techniciens', TechnicienController::class);
-        Route::get('/admin/bureau-accounts/create', [BureauAccountController::class, 'create'])->name('bureau-accounts.create');
-        Route::post('/admin/bureau-accounts', [BureauAccountController::class, 'store'])->name('bureau-accounts.store');
     });
 });
 
