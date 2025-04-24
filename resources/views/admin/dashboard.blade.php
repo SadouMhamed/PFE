@@ -145,4 +145,50 @@
             }
         });
     </script>
+    <!-- After your existing dashboard content -->
+    <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
+        <h2 class="text-lg font-semibold mb-4">Recent Status Updates</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Old Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">New Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Changed By</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($statusHistories as $history)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ class_basename($history->trackable_type) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ $history->trackable_id }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                    {{ $history->old_status ?? 'Created' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    {{ $history->new_status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {{ $history->changed_by }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $history->created_at->diffForHumans() }}
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 </x-admin-layout>

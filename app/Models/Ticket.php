@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasStatusHistory;
 
 class Ticket extends Model
 {
+    use HasStatusHistory;
     protected $fillable = [
         'demande_id',
         'observation',

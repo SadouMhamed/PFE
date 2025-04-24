@@ -6,6 +6,8 @@ use App\Models\Demande;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\StatusHistory;
+
 
 class DashboardController extends Controller
 {
@@ -75,15 +77,16 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
     
+        $statusHistories = StatusHistory::with('trackable')
+            ->latest()
+            ->take(10)
+            ->get();
+    
         return view('admin.dashboard', compact(
-            'totalDemandes',
-            'totalTickets',
-            'totalTechniciens',
             'ticketStats',
-            'pendingIssues',
-            'recentDemandes',
-            'recentTickets',
-            'technicienPerformance'
+            'technicienPerformance',
+            'totalTechniciens',
+            'statusHistories'
         ));
     }
 }

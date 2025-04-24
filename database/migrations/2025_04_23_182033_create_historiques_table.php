@@ -13,8 +13,17 @@ return new class extends Migration
     {
         Schema::create('historiques', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('type'); // 'ticket' or 'demande'
+            $table->unsignedBigInteger('reference_id'); // ticket_id or demande_id
+            $table->string('old_status')->nullable();
+            $table->string('new_status');
+            $table->unsignedBigInteger('updated_by'); // user who triggered the change
+            $table->timestamp('created_at')->useCurrent();
+        
+            // Optionally add foreign keys:
+            // $table->foreign('updated_by')->references('id')->on('users');
         });
+        
     }
 
     /**
