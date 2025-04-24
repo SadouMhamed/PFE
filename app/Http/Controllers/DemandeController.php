@@ -7,6 +7,7 @@ use App\Models\Demande;
 use App\Models\BureauDePoste;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\Historique;
 
 class DemandeController extends Controller
 {
@@ -21,32 +22,34 @@ class DemandeController extends Controller
     public function showForm()
     {
         $bureauDePostes = BureauDePoste::all();
-        $ticketsCount = Ticket::count();
-        $demandesCount = Demande::count();
-        $techniciensCount = User::where('role', 'technicien')->count();
-
-        return view('dashboard', compact('bureauDePostes', 'ticketsCount', 'demandesCount', 'techniciensCount'));
+        return view('demandes.create', compact('bureauDePostes'));
     }
     public function handleForm(Request $request)
     {
-        // Vérifier si l'utilisateur est connecté
         if (!auth()->check()) {
-        return back()->with('error', 'Vous devez être connecté pour soumettre une demande.');}
-       
-        // Validate inputs
+            return back()->with('error', 'Vous devez être connecté pour soumettre une demande.');
+        }
+           
         $validatedData = $request->validate([
             'typeProbleme' => 'required|string|in:hardware,software,réseau',
             'description' => 'required|min:10',
             'statut' => 'required|in:non affecté',
             'bureau_de_poste_id' => 'required|exists:bureau_de_postes,id',
         ]);
-
-        // Ajouter l'ID de l'utilisateur connecté
-         $validatedData['user_id'] = auth()->id();
-
-        // Save in database
-        Demande::create($validatedData);
-
+    
+        $validatedData['user_id'] = auth()->id();
+    
+        // Create demande
+        $demande = Demande::create($validatedData);
+    
+        // Create initial history entry with properly quoted string
+        Historique::create([
+            'demande_id' => $demande->id,
+            'status' => 'non affecté',
+            'description' => 'Demande créée',
+            'user_id' => auth()->id()
+        ]);
+    
         return back()->with('success', 'Demande enregistrée avec succès !');
     }
     public function listDemandes()
@@ -54,5 +57,12 @@ class DemandeController extends Controller
         $demandes = Demande::with('bureauDePoste')->latest()->get();
         return view('demandes-list', compact('demandes'));
     }
-
+    public function showHistorique()
+    {
+        $historiques = Historique::with(['demande', 'user'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return view('historique', compact('historiques'));
+    }
 }
