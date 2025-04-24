@@ -44,10 +44,10 @@ class DashboardController extends Controller
             'total' => $totalTickets,
             'handled' => Ticket::whereNotNull('technicien_id')->count(),
             'completed' => Ticket::where('status', 'traité')->count(),
-            'pending' => Ticket::where('status', 'non traité')->count(),
+            'pending' => Ticket::where('status', 'en_cours')->count(),
             'unassigned' => Ticket::whereNull('technicien_id')->count(),
         ];
-        $pendingIssues = Ticket::where('status', 'non traité')->count();
+        $pendingIssues = Ticket::where('status', 'en_cours')->count();
     
         // Get technician performance metrics
         $technicienPerformance = User::where('role', 'technicien')
