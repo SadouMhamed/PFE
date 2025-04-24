@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('status_histories', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('type'); // 'ticket' ou 'demande'
+            $table->unsignedBigInteger('reference_id'); // id de la demande ou ticket
+            $table->string('old_status')->nullable();
+            $table->string('new_status');
+            $table->text('description')->nullable(); // 🆕
+            $table->unsignedBigInteger('updated_by'); // user_id
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

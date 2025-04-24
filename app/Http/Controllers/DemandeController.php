@@ -44,10 +44,16 @@ class DemandeController extends Controller
     
         // Create initial history entry with properly quoted string
         Historique::create([
-            'demande_id' => $demande->id,
+            /*'demande_id' => $demande->id,
             'status' => 'non affecté',
             'description' => 'Demande créée',
-            'user_id' => auth()->id()
+            'user_id' => auth()->id():*/
+            'type' => 'demande',
+            'reference_id' => $demande->id,
+            'old_status' => null,
+            'new_status' => $demande->statut,
+            'description' => 'Demande créée et en attente de traitement.',
+            'updated_by' => auth()->id()
         ]);
     
         return back()->with('success', 'Demande enregistrée avec succès !');
