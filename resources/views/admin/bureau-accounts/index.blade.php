@@ -34,8 +34,8 @@
                                         {{ $user->bureauDePoste ? $user->bureauDePoste->intitule_fr : 'Non assigné' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('bureau-accounts.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                        <form action="{{ route('bureau-accounts.destroy', $user) }}" method="POST" class="inline">
+                                        <a href="{{ route('bureau-accounts.edit', ['bureau_account' => $user->id]) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                        <form action="{{ route('bureau-accounts.destroy', ['bureau_account' => $user->id]) }}" method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure?')">Delete</button>

@@ -22,7 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'bureau_de_poste_id'  // Add this to fillable
+        'bureau_de_poste_id'
     ];
     
     // Add this relationship

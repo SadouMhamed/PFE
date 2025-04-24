@@ -38,7 +38,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/tickets/{ticket}/pdf', [TicketController::class, 'generatePdf'])->name('tickets.generatePdf');
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
-        Route::resource('bureau-accounts', BureauAccountController::class);
+        Route::middleware(['auth', 'role:admin'])->group(function () {
+            Route::resource('bureau-accounts', BureauAccountController::class);
+        });
         // Add technicien routes
         Route::resource('techniciens', TechnicienController::class);
     });
