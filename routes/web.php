@@ -28,8 +28,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/demande', [DemandeController::class, 'handleForm'])->name('demande.submit');
     });
     Route::get('/dashboard/demandes', [DemandeController::class, 'listDemandes'])->name('demandes.list');
-    // Add these inside your auth middleware group
-    // Add these routes in your web.php
+    
     Route::middleware(['auth', 'role:admin,technicien'])->group(function () {
         Route::get('/tickets/create/{demande}', [TicketController::class, 'create'])->name('tickets.create');
         Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
@@ -38,10 +37,15 @@ Route::middleware('auth')->group(function () {
         Route::patch('/tickets/{ticket}/observation', [TicketController::class, 'updateObservation'])->name('tickets.updateObservation');
         Route::get('/tickets/{ticket}/pdf', [TicketController::class, 'generatePdf'])->name('tickets.generatePdf');
     });
+    route::middleware(['auth', 'role:technicien'])->group(function () {
+        Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+    });
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
+        
         Route::middleware(['auth', 'role:admin,technicien'])->group(function () {
             Route::resource('bureau-accounts', BureauAccountController::class);
+            Route::get('/demande/create', [DemandeController::class, 'showForm'])->name('demande.show');
         });
         // Add technicien routes
         Route::resource('techniciens', TechnicienController::class);
