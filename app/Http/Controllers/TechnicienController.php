@@ -47,13 +47,21 @@ class TechnicienController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $technicien->id,
+            'email' => 'required|email|unique:users,email,'.$technicien->id,
+            'password' => 'nullable|min:8|confirmed'
         ]);
-
-        $technicien->update($validated);
-
+    
+        $technicien->name = $validated['name'];
+        $technicien->email = $validated['email'];
+        
+        if (!empty($validated['password'])) {
+            $technicien->password = Hash::make($validated['password']);
+        }
+    
+        $technicien->save();
+    
         return redirect()->route('techniciens.index')
-            ->with('success', 'Technicien updated successfully');
+            ->with('success', 'Technician updated successfully');
     }
 
     public function destroy(User $technicien)
