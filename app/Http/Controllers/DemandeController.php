@@ -8,6 +8,7 @@ use App\Models\BureauDePoste;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Models\Historique;
+use PDF;
 
 class DemandeController extends Controller
 {
@@ -70,5 +71,41 @@ class DemandeController extends Controller
             ->get();
         
         return view('historique', compact('historiques'));
+    }
+    public function updateStatut(Request $request, $id)
+    {
+        $request->validate([
+            'statut' => 'required|string'
+        ]);
+
+        $demande = Demande::findOrFail($id);
+        $oldStatus = $demande->statut;
+        $newStatus = $request->input('statut');
+
+        if ($oldStatus !== $newStatus) {
+            $demande->statut = $newStatus;
+            $demande->save();
+
+            Historique::create([
+                'type' => 'demande',
+                'reference_id' => $demande->id,
+                'old_status' => $oldStatus,
+                'new_status' => $newStatus,
+                'updated_by' => auth()->id()
+            ]);
+        }
+
+        return back()->with('success', 'Le statut a été mis à jour avec succès.');
+    }
+
+    public function show(Demande $demande)
+    {
+        return view('demandes.show', compact('demande'));
+    }
+
+    public function generatePDF(Demande $demande)
+    {
+        $pdf = PDF::loadView('demandes.pdf', compact('demande'));
+        return $pdf->download('demande-'.$demande->id.'.pdf');
     }
 }

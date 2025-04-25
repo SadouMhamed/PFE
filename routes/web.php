@@ -30,20 +30,28 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/demandes', [DemandeController::class, 'listDemandes'])->name('demandes.list');
     // Add these inside your auth middleware group
     // Add these routes in your web.php
-    Route::get('/tickets/create/{demande}', [TicketController::class, 'create'])->name('tickets.create');
-    Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
-    Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
-    Route::patch('/tickets/{ticket}/process', [TicketController::class, 'markAsProcessed'])->name('tickets.markAsProcessed');
-    Route::patch('/tickets/{ticket}/observation', [TicketController::class, 'updateObservation'])->name('tickets.updateObservation');
-    Route::get('/tickets/{ticket}/pdf', [TicketController::class, 'generatePdf'])->name('tickets.generatePdf');
+    Route::middleware(['auth', 'role:admin,technicien'])->group(function () {
+        Route::get('/tickets/create/{demande}', [TicketController::class, 'create'])->name('tickets.create');
+        Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+        Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+        Route::patch('/tickets/{ticket}/process', [TicketController::class, 'markAsProcessed'])->name('tickets.markAsProcessed');
+        Route::patch('/tickets/{ticket}/observation', [TicketController::class, 'updateObservation'])->name('tickets.updateObservation');
+        Route::get('/tickets/{ticket}/pdf', [TicketController::class, 'generatePdf'])->name('tickets.generatePdf');
+    });
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
-        Route::middleware(['auth', 'role:admin'])->group(function () {
+        Route::middleware(['auth', 'role:admin,technicien'])->group(function () {
             Route::resource('bureau-accounts', BureauAccountController::class);
         });
         // Add technicien routes
         Route::resource('techniciens', TechnicienController::class);
     });
+    Route::get('/demandes/{demande}', [App\Http\Controllers\DemandeController::class, 'show'])
+        ->name('demandes.show');
+    
+    Route::get('/demandes/{demande}/pdf', [DemandeController::class, 'generatePDF'])
+        ->name('demandes.pdf')
+        ->middleware('auth');
 });
 
 require __DIR__.'/auth.php';

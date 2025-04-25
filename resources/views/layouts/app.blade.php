@@ -34,3 +34,11 @@
         </div>
     </body>
 </html>
+
+@auth
+    @if(auth()->user()->role !== 'user')
+        <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.*')">
+            {{ __('Tickets') }}
+        </x-nav-link>
+    @endif
+@endauth
