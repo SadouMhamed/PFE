@@ -22,13 +22,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // User routes
-    Route::middleware(['auth', 'role:user'])->group(function () {
+    // User routes - allow access for users, admins, and technicians
+    Route::middleware(['auth', 'role:user,admin,technicien'])->group(function () {
         Route::get('/demande/create', [DemandeController::class, 'showForm'])->name('demande.show');   
         Route::post('/demande', [DemandeController::class, 'handleForm'])->name('demande.submit');
     });
     Route::get('/dashboard/demandes', [DemandeController::class, 'listDemandes'])->name('demandes.list');
     
+    // Combine all ticket-related routes in one group
     Route::middleware(['auth', 'role:admin,technicien'])->group(function () {
         Route::get('/tickets/create/{demande}', [TicketController::class, 'create'])->name('tickets.create');
         Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
@@ -37,15 +38,19 @@ Route::middleware('auth')->group(function () {
         Route::patch('/tickets/{ticket}/observation', [TicketController::class, 'updateObservation'])->name('tickets.updateObservation');
         Route::get('/tickets/{ticket}/pdf', [TicketController::class, 'generatePdf'])->name('tickets.generatePdf');
     });
-    route::middleware(['auth', 'role:technicien'])->group(function () {
+    // Remove the duplicate technicien-only group
+    /*Route::middleware(['auth', 'role:technicien'])->group(function () {
+       
         Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
-    });
+        Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    });*/
+    
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
         
         Route::middleware(['auth', 'role:admin,technicien'])->group(function () {
             Route::resource('bureau-accounts', BureauAccountController::class);
-            Route::get('/demande/create', [DemandeController::class, 'showForm'])->name('demande.show');
+            // Remove the duplicate demande.show route from here
         });
         // Add technicien routes
         Route::resource('techniciens', TechnicienController::class);
