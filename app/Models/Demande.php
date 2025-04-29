@@ -13,8 +13,10 @@ class Demande extends Model
         'typeProbleme',
         'description',
         'statut',
+        'status',
         'user_id',
-        'bureau_de_poste_id'
+        'bureau_de_poste_id',
+        'updated_by'
     ];
 
     public function user()

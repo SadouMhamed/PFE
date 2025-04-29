@@ -18,24 +18,18 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach($historiques as $historique)
                             <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $historique->created_at->format('d/m/Y H:i') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    #{{ $historique->demande_id }}
-                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $historique->created_at->format('d/m/Y H:i') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $historique->demande_id }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        {{ $historique->status === 'traité' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                        {{ $historique->status }}
+                                        {{ $historique->new_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                        {{ $historique->new_status === 'en_cours' ? 'bg-blue-100 text-blue-800' : '' }}
+                                        {{ $historique->new_status === 'traité' ? 'bg-green-100 text-green-800' : '' }}">
+                                        {{ $historique->new_status ?? 'N/A' }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-500">
-                                    {{ $historique->description }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $historique->user->name }}
-                                </td>
+                                <td class="px-6 py-4">{{ $historique->description }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $historique->user->name ?? 'Système' }}</td>
                             </tr>
                             @endforeach
                         </tbody>

@@ -7,7 +7,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\StatusHistory;
-
+use App\Models\Historique;
 
 class DashboardController extends Controller
 {
@@ -77,6 +77,18 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
     
+        // Get history data for demandes and tickets
+        $demandeHistoriques = Historique::with(['demande', 'user'])
+            ->latest()
+            ->take(10)
+            ->get();
+            
+        $ticketHistoriques = StatusHistory::where('trackable_type', 'App\Models\Ticket')
+            ->with('trackable')
+            ->latest()
+            ->take(10)
+            ->get();
+    
         $statusHistories = StatusHistory::with('trackable')
             ->latest()
             ->take(10)
@@ -86,7 +98,11 @@ class DashboardController extends Controller
             'ticketStats',
             'technicienPerformance',
             'totalTechniciens',
-            'statusHistories'
+            'statusHistories',
+            'demandeHistoriques',
+            'ticketHistoriques',
+            'recentDemandes',
+            'recentTickets'
         ));
     }
 }
