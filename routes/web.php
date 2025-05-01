@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
         Route::resource('techniciens', TechnicienController::class);
+        Route::get('/admin/performance', [BureauPerformanceController::class, 'index'])->name('admin.performance');
     });
     
     // Add this new route for the addObservation method
@@ -80,4 +81,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // User management routes
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
     Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/system-health', [SystemHealthController::class, 'index'])->name('system.health');
+    Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit.logs');
 });
