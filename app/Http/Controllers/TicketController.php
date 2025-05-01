@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use App\Models\Demande;
 use App\Models\User;
+use App\Models\Historique;
 use Illuminate\Http\Request;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
+//use PDF;
 
 class TicketController extends Controller
 {
@@ -15,7 +17,18 @@ class TicketController extends Controller
         $techniciens = User::where('role', 'technicien')->get();
         return view('tickets.create', compact('demande', 'techniciens'));
     }
-
+    public function addDescription(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'description' => 'required|string'
+        ]);
+    
+        $ticket->description = $validated['description'];
+        $ticket->save();
+    
+        return redirect()->back()->with('success', 'Description ajoutée avec succès');
+    }
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -60,6 +73,24 @@ class TicketController extends Controller
         $ticket->save();
 
         return back()->with('success', 'Observation mise à jour');
+    }
+    public function addObservation(Request $request)
+    {
+        $validated = $request->validate([
+            'ticket_id' => 'required|exists:tickets,id',
+            'observation' => 'required|string'
+        ]);
+        
+        $observation = new Observation();
+        $observation->ticket_id = $validated['ticket_id'];
+        $observation->content = $validated['observation'];
+        $observation->user_id = auth()->id();
+        $observation->save();
+        
+        return response()->json([
+            'success' => true,
+            'observation' => $validated['observation']
+        ]);
     }
 
     public function generatePdf(Ticket $ticket)

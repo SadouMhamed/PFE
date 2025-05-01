@@ -29,5 +29,11 @@
         <p><span class="label">Status:</span> {{ $ticket->status }}</p>
         <p><span class="label">Date de Création:</span> {{ $ticket->created_at->format('d/m/Y H:i') }}</p>
     </div>
+
+<!-- Add this section where appropriate in your PDF template -->
+<div class="mb-4">
+    <h3 class="text-lg font-semibold">Description:</h3>
+    <p>{{ $ticket->description ?? 'Aucune description disponible' }}</p>
+</div>
 </body>
 </html>

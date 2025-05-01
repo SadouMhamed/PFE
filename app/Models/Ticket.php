@@ -12,7 +12,8 @@ class Ticket extends Model
         'demande_id',
         'observation',
         'technicien_id',
-        'status'
+        'status',
+        'description'
     ];
 
     public function demande()
@@ -23,5 +24,10 @@ class Ticket extends Model
     public function technicien()
     {
         return $this->belongsTo(User::class, 'technicien_id');
+    }
+    
+    public function observations()
+    {
+        return $this->hasMany(Observation::class);
     }
 }

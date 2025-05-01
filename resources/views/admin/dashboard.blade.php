@@ -1,4 +1,55 @@
 <x-admin-layout>
+    <!-- Notification Component -->
+    <div class="fixed top-4 right-4 z-50">
+        <div class="inline-block relative">
+            <button id="notification-button" class="relative p-2 text-gray-600 bg-white rounded-full hover:bg-gray-100 hover:text-gray-700 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span id="notification-counter" class="inline-flex absolute top-0 right-0 justify-center items-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">{{ $pendingDemandes ?? 0 }}</span>
+            </button>
+            
+            
+            <div id="notification-dropdown" class="hidden overflow-hidden absolute right-0 z-20 mt-2 w-80 bg-white rounded-md shadow-lg">
+                <div class="py-2">
+                    <div class="px-4 py-2 bg-gray-100 border-b border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-800">Notifications</h3>
+                    </div>
+                    <div id="notification-list" class="overflow-y-auto max-h-64">
+                        @forelse($recentDemandes ?? [] as $demande)
+                            <a href="{{ route('demandes.show', $demande->id) }}" class="block px-4 py-3 border-b border-gray-200 transition duration-150 ease-in-out hover:bg-gray-50">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 p-1 bg-blue-500 rounded-full">
+                                        <svg class="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1 ml-3 w-0">
+                                        <p class="text-sm font-medium text-gray-900">New Demand: #{{ $demande->id }}</p>
+                                        <p class="text-sm text-gray-500 truncate">{{ $demande->type_probleme }}</p>
+                                        <p class="text-xs text-gray-400">{{ $demande->created_at->diffForHumans() }}</p>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $demande->statut === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800' }}">
+                                            {{ $demande->statut }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        @empty
+                            <div class="px-4 py-6 text-center text-gray-500">
+                                No new notifications
+                            </div>
+                        @endforelse
+                    </div>
+                    <div class="px-4 py-2 text-center bg-gray-100">
+                        <a href="{{ route('demandes.list') }}" class="text-sm font-medium text-blue-600 hover:text-blue-500">View all demands</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 lg:grid-cols-4">
         <div class="p-6 bg-blue-100 rounded-lg shadow-sm">
@@ -15,7 +66,7 @@
             <h3 class="text-lg font-semibold text-green-800">Completed Tickets</h3>
             <p class="text-3xl font-bold text-green-600">{{ $ticketStats['completed'] }}</p>
             <p class="mt-2 text-sm text-green-600">
-                {{ round(($ticketStats['completed'] / $ticketStats['total']) * 100, 1) }}% completion rate
+                {{ $ticketStats['total'] > 0 ? round(($ticketStats['completed'] / $ticketStats['total']) * 100, 1) : 0 }}% completion rate
             </p>
         </div>
 
@@ -261,7 +312,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="max-w-xs text-sm text-gray-900 truncate">{{ $historique->comments ?? 'Aucun commentaire' }}</div>
+                                    <div class="max-w-xs text-sm text-gray-900 truncate">{{ $historique->observation ?? 'Aucun commentaire' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     {{ $historique->changed_by }}
@@ -342,4 +393,77 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        // Notification System
+        <!-- Add notification sound functionality -->
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up notification sound');
+            // Create audio element for notification sound
+            const notificationSound = new Audio('/sounds/notification.mp3');
+            notificationSound.addEventListener('canplaythrough', function() {
+            console.log('Notification sound loaded successfully');
+        });
+        notificationSound.addEventListener('error', function(e) {
+            console.error('Error loading notification sound:', e);
+            console.error('Error code:', this.error.code);
+            console.error('Error message:', this.error.message);
+        });
+            
+            // Function to play notification sound
+            function playNotificationSound() {
+                notificationSound.play().catch(error => {
+                    console.error('Error playing notification sound:', error);
+                });
+            }
+            
+            // Toggle notification dropdown
+            const notificationButton = document.getElementById('notification-button');
+            const notificationDropdown = document.getElementById('notification-dropdown');
+            
+            notificationButton.addEventListener('click', function() {
+                notificationDropdown.classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!notificationButton.contains(event.target) && !notificationDropdown.contains(event.target)) {
+                    notificationDropdown.classList.add('hidden');
+                }
+            });
+            
+            // Play sound when new notifications arrive (example implementation)
+            // You'll need to integrate this with your actual notification system
+            const notificationCounter = document.getElementById('notification-counter');
+            let previousCount = parseInt(notificationCounter.textContent);
+            
+            // Check for new notifications periodically (every 30 seconds)
+            setInterval(function() {
+                fetch('/api/notifications/count')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`API returned ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const newCount = data.count;
+                        if (newCount > previousCount) {
+                            playNotificationSound();
+                            previousCount = newCount;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching notifications:', error);
+                        // Don't keep trying if endpoint doesn't exist
+                        // clearInterval(this);
+                    });
+            }, 30000);
+            
+            // Play sound on initial load if there are pending notifications
+            if (parseInt(notificationCounter.textContent) > 0) {
+                playNotificationSound();
+            }
+        });
+    </script>
 </x-admin-layout>

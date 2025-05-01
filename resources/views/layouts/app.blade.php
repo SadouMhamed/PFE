@@ -13,6 +13,30 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script>
+            // Wait for the DOM to be fully loaded
+            document.addEventListener('DOMContentLoaded', function() {
+                // Get the notification button and dropdown elements
+                const notificationButton = document.getElementById('notification-button');
+                const notificationDropdown = document.getElementById('notification-dropdown');
+                
+                // If both elements exist, set up the click event
+                if (notificationButton && notificationDropdown) {
+                    // Toggle the dropdown when the button is clicked
+                    notificationButton.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        notificationDropdown.classList.toggle('hidden');
+                    });
+                    
+                    // Close the dropdown when clicking outside
+                    document.addEventListener('click', function(event) {
+                        if (!notificationButton.contains(event.target) && !notificationDropdown.contains(event.target)) {
+                            notificationDropdown.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+        </script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -21,7 +45,7 @@
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>

@@ -2,26 +2,30 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BureauDePoste extends Model
 {
+    use HasFactory;
+
     protected $table = 'bureau_de_postes';
     public $timestamps = true;
     
     protected $fillable = [
+        'brigade',
+        'classe',
         'code',
+        'code_commune',
+        'commune',
+        'cp',
+        'daira',
+        'etat',
+        'intitule_ar',
         'intitule_fr',
-        'intitule_ar'
+        'upw',
+        'upw_id',
+        'wilaya',
+        'wilaya_id'
     ];
-
-    public function demandes()
-    {
-        return $this->hasMany(Demande::class);
-    }
-
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
 }
