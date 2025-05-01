@@ -27,15 +27,17 @@ class BureauAccountController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'bureau_de_poste_id' => 'required|exists:bureau_de_postes,id'
+            'wilaya_id' => 'required|exists:wilayas,id'
         ]);
     
+        $currentUser = auth()->user();
+        
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'user',
-            'bureau_de_poste_id' => $validated['bureau_de_poste_id']
+            'wilaya_id' => $currentUser->wilaya_id // Inherit wilaya_id from admin
         ]);
     
         return redirect()->route('bureau-accounts.index')

@@ -18,29 +18,9 @@
                     <form method="POST" action="{{ route('bureau-accounts.store') }}" class="space-y-6">
                         @csrf
                         <input type="hidden" name="role" value="user">
+                        <input type="hidden" name="wilaya_id" value="{{ auth()->user()->wilaya_id }}">
 
                         <div>
-                            
-                            <label for="bureau_de_poste_id" class="block text-sm font-medium text-gray-700">Bureau de Poste <span class="text-red-500">*</span></label>
-                            <select id="bureau_de_poste_id" name="bureau_de_poste_id" required class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">Select Bureau de Poste</option>
-                                @foreach($bureauDePostes as $bureau)
-                                    @if(!auth()->user()->wilaya_id || auth()->user()->wilaya_id == $bureau->wilaya_id)
-                                        <option value="{{ $bureau->id }}" {{ old('bureau_de_poste_id') == $bureau->id ? 'selected' : '' }}>
-                                            {{ $bureau->intitule_fr }}
-                                        </option>
-                                    @endif
-                                @endforeach
-                            </select>
-                            @error('bureau_de_poste_id')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        
-
-                        <div>
-                            
                             <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                             <input type="text" name="name" id="name" class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>

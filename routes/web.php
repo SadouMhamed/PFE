@@ -79,4 +79,5 @@ Route::post('/admin/bureau-de-poste/import', [BureauDePosteController::class, 'i
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // User management routes
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+    Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
 });

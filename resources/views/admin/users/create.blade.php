@@ -27,14 +27,23 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="wilaya_id" class="block text-sm font-medium text-gray-700">Wilaya</label>
-                            <select id="wilaya_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('wilaya_id') border-red-500 @enderror" 
-                                name="wilaya_id" required>
-                                <option value="">Select Wilaya</option>
-                                @foreach($wilayas as $wilaya)
-                                    <option value="{{ $wilaya->id }}">{{ $wilaya->wilaya_name }}</option>
-                                @endforeach
-                            </select>
+                            @if(auth()->user()->wilaya_id)
+                                <input type="hidden" name="wilaya_id" value="{{ auth()->user()->wilaya_id }}">
+                            @else
+                                <div class="mb-4">
+                                    <label for="wilaya_id" class="block text-sm font-medium text-gray-700">Wilaya</label>
+                                    <select id="wilaya_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('wilaya_id') border-red-500 @enderror" 
+                                        name="wilaya_id" required>
+                                        <option value="">Select Wilaya</option>
+                                        @foreach($wilayas as $wilaya)
+                                            <option value="{{ $wilaya->id }}">{{ $wilaya->wilaya_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('wilaya_id')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
                             @error('wilaya_id')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror

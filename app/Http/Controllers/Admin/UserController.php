@@ -24,17 +24,14 @@ class UserController extends Controller
         // Get the current admin user
         $currentUser = Auth::user();
         
-        // If the user has a wilaya_id, only show bureau de postes for that wilaya
-        // Otherwise, show all bureau de postes (for super admin)
+        // Only show wilaya selection if admin doesn't have one assigned
         if ($currentUser->wilaya_id) {
             $wilayas = Wilaya::where('id', $currentUser->wilaya_id)->get();
-            $bureauDePostes = BureauDePoste::where('wilaya_id', $currentUser->wilaya_id)->get();
         } else {
             $wilayas = Wilaya::all();
-            $bureauDePostes = BureauDePoste::all();
         }
         
-        return view('admin.users.create', compact('wilayas', 'bureauDePostes'));
+        return view('admin.users.create', compact('wilayas'));
     }
     
     public function store(Request $request)
@@ -44,17 +41,20 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'wilaya_id' => ['required', 'exists:wilayas,id'],
+            'role' => ['required', 'string', 'in:user,admin'],
         ]);
-        
+        if ($request->wilaya_id != auth()->user()->wilaya_id) {
+            return back()->withErrors(['wilaya_id' => 'You can only create users for your own wilaya']);
+        }
         $currentUser = Auth::user();
-        $wilayaId = $currentUser->wilaya_id ? $currentUser->wilaya_id : $request->wilaya_id;
         
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'admin',
-            'wilaya_id' => $wilayaId, // Use the calculated wilayaId
+            'role' => $request->role,
+            'wilaya_id' => $request->wilaya_id,
+            'created_by' => auth()->id(),
         ]);
         
         return redirect()->route('admin.users.index')
