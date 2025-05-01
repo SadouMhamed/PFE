@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('status_histories', function (Blueprint $table) {
-            $table->id();
-            $table->string('type'); // 'ticket' ou 'demande'
-            $table->unsignedBigInteger('reference_id'); // id de la demande ou ticket
-            $table->string('old_status')->nullable();
-            $table->string('new_status');
-            $table->text('description')->nullable(); // 🆕
-            $table->unsignedBigInteger('updated_by'); // user_id
-            $table->timestamp('created_at')->useCurrent();
-        });
+        if (!Schema::hasTable('status_histories')) {
+            Schema::create('status_histories', function (Blueprint $table) {
+                $table->id();
+                $table->string('type');
+                $table->unsignedBigInteger('reference_id');
+                $table->string('old_status')->nullable();
+                $table->string('new_status');
+                $table->text('description')->nullable();
+                $table->unsignedBigInteger('updated_by');
+                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            });
+        }
     }
 
     /**

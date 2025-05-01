@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\BureauDePoste;
+use App\Models\Wilaya;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,8 +12,13 @@ class BureauAccountController extends Controller
 {
     public function create()
     {
-        $bureauDePostes = BureauDePoste::where('upw_id', auth()->user()->wilaya_id)->get();
-        return view('admin.bureau-accounts.create', compact('bureauDePostes'));
+        $currentUser = auth()->user();
+        $wilayas = Wilaya::all(); // Ajoutez cette ligne
+        $bureauDePostes = $currentUser->wilaya_id 
+            ? BureauDePoste::where('wilaya_id', $currentUser->wilaya_id)->get()
+            : BureauDePoste::all();
+        
+        return view('admin.bureau-accounts.create', compact('bureauDePostes', 'wilayas'));
     }
 
     public function store(Request $request)

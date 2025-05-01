@@ -9,19 +9,28 @@ return new class extends Migration
     public function up()
     {
         Schema::table('historiques', function (Blueprint $table) {
-            $table->string('status')->nullable();
-            $table->text('description')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
-            
-            $table->foreign('user_id')->references('id')->on('users');
+            if (!Schema::hasColumn('historiques', 'status')) {
+                $table->string('status')->nullable();
+            }
+            if (!Schema::hasColumn('historiques', 'description')) {
+                $table->text('description')->nullable();
+            }
+            if (!Schema::hasColumn('historiques', 'user_id')) {
+                $table->unsignedBigInteger('user_id')->nullable();
+                $table->foreign('user_id')->references('id')->on('users');
+            }
         });
     }
 
     public function down()
     {
         Schema::table('historiques', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn(['status', 'description', 'user_id']);
+            if (Schema::hasColumn('historiques', 'user_id')) {
+                $table->dropForeign(['user_id']);
+            }
+            $table->dropColumnIfExists('status');
+            $table->dropColumnIfExists('description');
+            $table->dropColumnIfExists('user_id');
         });
     }
 };

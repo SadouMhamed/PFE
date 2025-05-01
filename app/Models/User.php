@@ -63,6 +63,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Demande::class);
     }
+        
 
     public function tickets()
     {

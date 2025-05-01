@@ -8,17 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Wilaya extends Model
 {
     use HasFactory;
-    
-    protected $fillable = ['upw'];
-    
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
-    
-    /**
-     * Get the bureau de postes for this wilaya
-     */
+
+    protected $fillable = [
+        'wilaya_name',
+        // add other fields as needed
+    ];
+
+    // Relationship with BureauDePoste if needed
     public function bureauDePostes()
     {
         return $this->hasMany(BureauDePoste::class);
