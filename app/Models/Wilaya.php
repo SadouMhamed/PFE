@@ -15,4 +15,12 @@ class Wilaya extends Model
     {
         return $this->hasMany(User::class);
     }
+    
+    /**
+     * Get the bureau de postes for this wilaya
+     */
+    public function bureauDePostes()
+    {
+        return $this->hasMany(BureauDePoste::class);
+    }
 }

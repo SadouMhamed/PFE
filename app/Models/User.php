@@ -68,7 +68,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ticket::class, 'technicien_id');
     }
-
+        
     public function hasRole($role)
     {
         return $this->role === $role;

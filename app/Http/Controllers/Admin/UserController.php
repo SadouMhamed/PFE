@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Wilaya;
+use App\Models\BureauDePoste;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -19,8 +21,20 @@ class UserController extends Controller
     
     public function create()
     {
-        $wilayas = Wilaya::all();
-        return view('admin.users.create', compact('wilayas'));
+        // Get the current admin user
+        $currentUser = Auth::user();
+        
+        // If the user has a wilaya_id, only show bureau de postes for that wilaya
+        // Otherwise, show all bureau de postes (for super admin)
+        if ($currentUser->wilaya_id) {
+            $wilayas = Wilaya::where('id', $currentUser->wilaya_id)->get();
+            $bureauDePostes = BureauDePoste::where('wilaya_id', $currentUser->wilaya_id)->get();
+        } else {
+            $wilayas = Wilaya::all();
+            $bureauDePostes = BureauDePoste::all();
+        }
+        
+        return view('admin.users.create', compact('wilayas', 'bureauDePostes'));
     }
     
     public function store(Request $request)
@@ -46,8 +60,20 @@ class UserController extends Controller
     
     public function edit(User $user)
     {
-        $wilayas = Wilaya::all();
-        return view('admin.users.edit', compact('user', 'wilayas'));
+        // Get the current admin user
+        $currentUser = Auth::user();
+        
+        // If the user has a wilaya_id, only show bureau de postes for that wilaya
+        // Otherwise, show all bureau de postes (for super admin)
+        if ($currentUser->wilaya_id) {
+            $wilayas = Wilaya::where('id', $currentUser->wilaya_id)->get();
+            $bureauDePostes = BureauDePoste::where('wilaya_id', $currentUser->wilaya_id)->get();
+        } else {
+            $wilayas = Wilaya::all();
+            $bureauDePostes = BureauDePoste::all();
+        }
+        
+        return view('admin.users.edit', compact('user', 'wilayas', 'bureauDePostes'));
     }
     
     public function update(Request $request, User $user)

@@ -24,7 +24,9 @@
                             <select id="bureau_de_poste_id" name="bureau_de_poste_id" required class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="">Select Bureau de Poste</option>
                                 @foreach($bureauDePostes as $bureau)
-                                    <option value="{{ $bureau->id }}" {{ old('bureau_de_poste_id') == $bureau->id ? 'selected' : '' }}>{{ $bureau->intitule_fr }}</option>
+                                    @if(auth()->user()->wilaya_id == $bureau->wilaya_id)
+                                        <option value="{{ $bureau->id }}" {{ old('bureau_de_poste_id') == $bureau->id ? 'selected' : '' }}>{{ $bureau->intitule_fr }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                             @error('bureau_de_poste_id')

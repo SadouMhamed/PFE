@@ -28,4 +28,12 @@ class BureauDePoste extends Model
         'wilaya',
         'wilaya_id'
     ];
+    
+    /**
+     * Get the wilaya that this bureau de poste belongs to
+     */
+    public function wilaya()
+    {
+        return $this->belongsTo(Wilaya::class);
+    }
 }

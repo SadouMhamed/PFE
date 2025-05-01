@@ -11,7 +11,7 @@ class BureauAccountController extends Controller
 {
     public function create()
     {
-        $bureauDePostes = BureauDePoste::all();
+        $bureauDePostes = BureauDePoste::where('upw_id', auth()->user()->wilaya_id)->get();
         return view('admin.bureau-accounts.create', compact('bureauDePostes'));
     }
 

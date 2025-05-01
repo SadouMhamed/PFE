@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wilayas', function (Blueprint $table) {
-            $table->id();
-            $table->string('upw'); // Upw column for wilaya names
-            $table->timestamps();
+        Schema::table('bureau_de_postes', function (Blueprint $table) {
+            //
         });
     }
 
@@ -23,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wilayas');
+        Schema::table('bureau_de_postes', function (Blueprint $table) {
+            //
+        });
     }
 };
