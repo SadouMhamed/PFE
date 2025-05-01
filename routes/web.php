@@ -74,3 +74,9 @@ require __DIR__.'/auth.php';
 // Bureau de Poste Import Routes
 Route::get('/admin/bureau-de-poste/import', [BureauDePosteController::class, 'importForm'])->name('bureau-de-poste.import.form');
 Route::post('/admin/bureau-de-poste/import', [BureauDePosteController::class, 'import'])->name('bureau-de-poste.import');
+
+// Admin routes
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // User management routes
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+});

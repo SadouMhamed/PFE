@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Wilaya extends Model
 {
     use HasFactory;
-
+    
     protected $fillable = ['upw'];
+    
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

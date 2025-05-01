@@ -13,11 +13,7 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        if (!auth()->check()) {
-            return redirect('login');
-        }
-
-        if (auth()->user()->role !== $role) {
+        if (!$request->user() || $request->user()->role !== $role) {
             abort(403, 'Unauthorized action.');
         }
 

@@ -22,13 +22,18 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'bureau_de_poste_id'  // Add this to fillable
+        'bureau_de_poste_id',
+        'wilaya_id',
     ];
     
     // Add this relationship
     public function bureauDePoste()
     {
         return $this->belongsTo(BureauDePoste::class, 'bureau_de_poste_id');
+    }
+    public function wilaya()
+    {
+        return $this->belongsTo(Wilaya::class);
     }
 
     /**
