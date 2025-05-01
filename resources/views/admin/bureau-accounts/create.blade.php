@@ -37,18 +37,7 @@
                             @enderror
                         </div>
 
-                        <div>
-                            <label for="wilaya_id" class="block text-sm font-medium text-gray-700">Wilaya</label>
-                            <select id="wilaya_id" name="wilaya_id" class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">Select Wilaya</option>
-                                @foreach($wilayas as $wilaya)
-                                    <option value="{{ $wilaya->id }}" {{ old('wilaya_id') == $wilaya->id ? 'selected' : '' }}>
-                                        {{ $wilaya->wilaya_name }}
-                                    </option>
-                                @endforeach
-                               
-                            </select>
-                        </div>
+                        
 
                         <div>
                             
