@@ -38,10 +38,12 @@
            
             <div>
                 <label for="bureau_de_poste_id" class="block text-gray-700">Bureau de Poste:</label>
-                <select id="bureau_de_poste_id" name="bureau_de_poste_id" class="w-full p-2 border rounded-lg">
+                <select id="bureau_de_poste_id" name="bureau_de_poste_id" class="p-2 w-full rounded-lg border">
                     <option value="">Sélectionnez un bureau de poste</option>
                     @foreach($bureauDePostes as $bureau)
-                        <option value="{{ $bureau->id }}">{{ $bureau->intitule_fr }}</option>
+                        @if(auth()->user()->wilaya_id == $bureau->wilaya_id)
+                            <option value="{{ $bureau->id }}">{{ $bureau->intitule_fr }}</option>
+                        @endif
                     @endforeach
                 </select>
                 @error('bureau_de_poste_id')

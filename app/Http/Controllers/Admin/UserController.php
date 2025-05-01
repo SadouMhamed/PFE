@@ -46,12 +46,15 @@ class UserController extends Controller
             'wilaya_id' => ['required', 'exists:wilayas,id'],
         ]);
         
+        $currentUser = Auth::user();
+        $wilayaId = $currentUser->wilaya_id ? $currentUser->wilaya_id : $request->wilaya_id;
+        
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'admin',
-            'wilaya_id' => $request->wilaya_id,
+            'wilaya_id' => $wilayaId, // Use the calculated wilayaId
         ]);
         
         return redirect()->route('admin.users.index')
@@ -84,10 +87,13 @@ class UserController extends Controller
             'wilaya_id' => ['required', 'exists:wilayas,id'],
         ]);
         
+        $currentUser = Auth::user();
+        $wilayaId = $currentUser->wilaya_id ? $currentUser->wilaya_id : $request->wilaya_id;
+        
         $data = [
             'name' => $request->name,
             'email' => $request->email,
-            'wilaya_id' => $request->wilaya_id,
+            'wilaya_id' => $wilayaId, // Use the calculated wilayaId
         ];
         
         if ($request->filled('password')) {

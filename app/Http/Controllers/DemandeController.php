@@ -22,9 +22,16 @@ class DemandeController extends Controller
     //
     public function showForm()
     {
-        $bureauDePostes = BureauDePoste::all();
+        // Get the current user's wilaya_id
+        $userWilayaId = auth()->user()->wilaya_id;
+        
+        // Filter bureau de postes by the user's wilaya_id
+        $bureauDePostes = BureauDePoste::where('wilaya_id', $userWilayaId)->get();
+        
+        //dd($bureauDePostes);
         return view('demandes.create', compact('bureauDePostes'));
     }
+    
     public function handleForm(Request $request)
     {
         if (!auth()->check()) {

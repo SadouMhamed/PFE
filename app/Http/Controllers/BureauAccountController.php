@@ -70,6 +70,19 @@ class BureauAccountController extends Controller
 
     public function destroy(User $user)
     {
+        // Check if the user being deleted is a bureau account (role 'user')
+        if ($user->role !== 'user') {
+            return redirect()->route('bureau-accounts.index')
+                ->with('error', 'Only bureau accounts can be deleted!');
+        }
+    
+        // Check if the current user has permission to delete this account
+        $currentUser = auth()->user();
+        if ($currentUser->wilaya_id && $user->bureauDePoste->wilaya_id !== $currentUser->wilaya_id) {
+            return redirect()->route('bureau-accounts.index')
+                ->with('error', 'You can only delete accounts from your own wilaya!');
+        }
+    
         $user->delete();
         return redirect()->route('bureau-accounts.index')
             ->with('success', 'Account deleted successfully!');
