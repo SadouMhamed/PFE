@@ -7,6 +7,7 @@ use App\Models\BureauDePoste;
 use App\Models\Wilaya;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class BureauAccountController extends Controller
 {
@@ -27,17 +28,17 @@ class BureauAccountController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'wilaya_id' => 'required|exists:wilayas,id'
+            //'bureau_de_poste_id' => 'required|exists:bureau_de_postes,id'
         ]);
+        $currentUser = Auth::user();
     
-        $currentUser = auth()->user();
-        
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'user',
-            'wilaya_id' => $currentUser->wilaya_id // Inherit wilaya_id from admin
+            //'bureau_de_poste_id' => $validated['bureau_de_poste_id'],
+            'wilaya_id' => $currentUser->wilaya_id
         ]);
     
         return redirect()->route('bureau-accounts.index')

@@ -40,21 +40,18 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'wilaya_id' => ['required', 'exists:wilayas,id'],
-            'role' => ['required', 'string', 'in:user,admin'],
+            // Remove wilaya_id from validation since it's not in form anymore
         ]);
-        if ($request->wilaya_id != auth()->user()->wilaya_id) {
-            return back()->withErrors(['wilaya_id' => 'You can only create users for your own wilaya']);
-        }
+        
         $currentUser = Auth::user();
+        $wilayaId = $currentUser->wilaya_id; // Only use admin's wilaya_id
         
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'wilaya_id' => $request->wilaya_id,
-            'created_by' => auth()->id(),
+            'role' => 'admin',
+            'wilaya_id' => $currentUser->wilaya_id,
         ]);
         
         return redirect()->route('admin.users.index')

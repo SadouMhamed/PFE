@@ -7,7 +7,7 @@
                     
                     <form method="POST" action="{{ route('admin.users.store') }}">
                         @csrf
-
+                        <input type="hidden" name="role" value="admin">
                         <div class="mb-4">
                             <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                             <input id="name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 @error('name') border-red-500 @enderror" 
