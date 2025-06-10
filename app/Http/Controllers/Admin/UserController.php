@@ -40,18 +40,22 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            // Remove wilaya_id from validation since it's not in form anymore
+            
         ]);
         
         $currentUser = Auth::user();
-        $wilayaId = $currentUser->wilaya_id; // Only use admin's wilaya_id
+        $wilayaId = $request->wilaya_id;
+
+        // If the current user has a wilaya_id, use that
+        // Otherwise, use the one from the request
+        $wilayaId = $currentUser->wilaya_id? $currentUser->wilaya_id : $request->wilaya_id;
         
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'admin',
-            'wilaya_id' => $currentUser->wilaya_id,
+            'wilaya_id' => $wilayaId,
         ]);
         
         return redirect()->route('admin.users.index')

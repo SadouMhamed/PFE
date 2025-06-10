@@ -27,7 +27,7 @@
                                     name="wilaya_id" required>
                                     <option value="">Select Wilaya</option>
                                     @foreach($wilayas as $wilaya)
-                                        <option value="{{ $wilaya->id }}">{{ $wilaya->wilaya_name }}</option>
+                                        <option value="{{ $wilaya->id }}">{{ $wilaya->intitule_fr }}</option>
                                     @endforeach
                                 </select>
                                 @error('wilaya_id')
